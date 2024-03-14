@@ -5,11 +5,11 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
     <div>
       <h1>Home</h1>
       <p> 
-        Display some interesting information about our { businesses.length } Businesses
+        There are { businesses.length } businesses in our system.
         <br />
-        Display some interesting information about our { users.length } Users
+        There are { users.length } registered users in our system.
         <br />
-        Display some interesting information about our { reviews.length } Reviews
+        Users can add review for each business. There are { reviews.length } reviews so far.
       </p>
       {
         !auth.id ? <>

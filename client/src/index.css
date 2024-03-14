@@ -1,9 +1,13 @@
 body {
   font-family: verdana;
 }
+
 form {
+
   display: flex;
   flex-direction: column;
+  width: 300px;
+
 }
 
 form > * {
@@ -13,6 +17,9 @@ form > * {
 nav {
   display: flex;
   justify-content: space-around;
+  background-color: lightgreen;
+  height: 2rem;
+  align-items: center
 }
 
 .error {

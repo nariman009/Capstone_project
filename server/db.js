@@ -26,9 +26,10 @@ const createTables = async()=> {
     CREATE TABLE reviews(
       id UUID PRIMARY KEY,
       text VARCHAR(50) NOT NULL,
+      rate NUMERIC(2,1),
       user_id UUID REFERENCES users(id) NOT NULL,
       business_id UUID REFERENCES businesses(id) NOT NULL,
-      CONSTRAINT unique_review UNIQUE (user_id, business_id, text)
+      CONSTRAINT unique_review UNIQUE (user_id, business_id)
 
 );
   `;
@@ -74,7 +75,7 @@ const findUserWithToken = async(token)=> {
     throw error;
   }
   const SQL = `
-    SELECT id, username FROM users WHERE id=$1;
+    SELECT id, username FROM users WHERE id = $1;
   `;
   const response = await client.query(SQL, [id]);
   if(!response.rows.length){
@@ -112,13 +113,13 @@ const fetchBusinesses = async()=> {
   return response.rows;
 };
 
-const createReview = async({ user_id, business_id, text })=> {
+const createReview = async({ user_id, business_id, text, rate })=> {
   const SQL = `
-      INSERT INTO reviews(id, user_id, business_id, text)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO reviews(id, user_id, business_id, text, rate)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), user_id, business_id, text]);
+  const response = await client.query(SQL, [uuid.v4(), user_id, business_id, text, rate]);
   return response.rows[0];
 };
 
@@ -141,11 +142,11 @@ const destroyReview = async({ id, user_id, business_id }) => {
   await client.query(SQL, [id, user_id]);
 };
 
-const updateReview = async ({ id, user_id, business_id, text }) => {
+const updateReview = async ({ id, user_id, business_id, text, rate }) => {
   console.log(`Updating review ${id} for ${business_id} for user ${user_id}`);
   const SQL = `
       UPDATE reviews
-      SET text = $4
+      SET text = $4 AND rate = $5
       WHERE id = $1 AND user_id = $2 AND business_id = $3
   `;
   await client.query(SQL, [text, id, user_id]);

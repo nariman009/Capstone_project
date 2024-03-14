@@ -95,7 +95,7 @@ app.get('/api/users/reviews',  async(req, res, next)=> {
   }
 });
 
-app.delete('/api/users/:user_id/:business_id/reviews/:id', isLoggedIn,  async(req, res, next)=> {
+app.delete('/api/users/:user_id/:business_id/reviews/:id',  async(req, res, next)=> {
     try {
         // console.log("del user fav ",req.params.user_id);
         // console.log("del user fav ",req.user.id);
@@ -112,16 +112,18 @@ app.delete('/api/users/:user_id/:business_id/reviews/:id', isLoggedIn,  async(re
     }
 });
 
-app.post('/api/users/:user_id/:business_id/reviews', isLoggedIn,  async(req, res, next)=> {
+app.post('/api/users/:userId/:selectedOption/reviews',  async(req, res, next)=> {
     try {
         // console.log("add user fav ",req.params.user_id);
         // console.log("add user fav ",req.user.id);
-        if(req.params.user_id !== req.user.id){
-          const error = Error('not authorized');
-          error.status = 401;
-          throw error;
-        }
-        res.status(201).send(await createReview({ user_id: req.params.user_id, product_id: req.body.product_id}));
+        // if(req.params.user_id !== req.user.id){
+        //   const error = Error('not authorized');
+        //   error.status = 401;
+        //   throw error;
+        // }
+        
+        console.log({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate})
+        res.status(201).send(await createReview({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate}));
     }
     catch(ex){
         next(ex);
@@ -169,7 +171,7 @@ const [moe, lucy, ethyl, curly, costco, walmart, albertsons, rouses] = await Pro
   createBusiness({ name: 'Rouses'}),
 ]);
 
-const review = createReview({ user_id: moe.id, business_id: costco.id, text: "Good Review" });
+// const review = createReview({ user_id: moe.id, business_id: costco.id, text: "Good Review" });
 
 
   console.log(await fetchUsers());

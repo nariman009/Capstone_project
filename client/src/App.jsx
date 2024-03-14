@@ -114,7 +114,7 @@ function App() {
         <Route path='/businesses' element={<Businesses businesses={ businesses } />} />
         <Route path='/users' element={<Users users={ users}/>} />
         {
-          !!auth.id && <Route path='/createReview' element={<CreateReview reviews={ reviews } businesses={ businesses }/>} />
+          !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } reviews={ reviews } businesses={ businesses }/>} />
         }
       </Routes>
     </>
