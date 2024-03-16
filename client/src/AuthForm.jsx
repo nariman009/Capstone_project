@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const AuthForm = ({ authAction, mode='login' })=> {
+const AuthForm = ({ authAction, mode })=> {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

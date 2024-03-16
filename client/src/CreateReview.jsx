@@ -2,56 +2,46 @@
 import { useState, useEffect } from 'react'
 
 
-const CReview = ({ auth, users, businesses })=> {
+const CReview = ({ createAction, businesses })=> {
+  // const [businesses, setBusinesses] = useState([]);
   const [selectedOption, setSelectedOption] = useState(businesses[0]?.name || '');
-    const [comment, setComment] = useState('');
-    const [rate, setRate] = useState('');
-    const [error, setError] = useState('');
-    const [reviews, setReviews] = useState([]);
+  const [comment, setComment] = useState('');
+  const [rate, setRate] = useState('');
+  const [error, setError] = useState('');
+  // const [reviews, setReviews] = useState([]);
+  const [addedReview, setAddedReview] = useState('');
 
+  
+  // console.log("userId ", auth.id);
+  // console.log("selectedOption ", selectedOption);
+  
+  // setSelectedOption(businesses[0]?.name || ''); 
+  const businessId = businesses.find(business => business.name == selectedOption);
     
-    console.log("userId ", auth.id);
-    console.log("selectedOption ", selectedOption);
-    
-    // setSelectedOption(businesses[0]?.name || ''); 
-    const businessId = businesses.find(business => business.name == selectedOption);
+  const submit = async (ev) => {
+    ev.preventDefault();
+    try {
+      const returned = await createAction({businessId, comment, rate})
+      setAddedReview(returned)
+      console.log("returend",returned)
       
-    const submit = async (ev) => {
-      ev.preventDefault();
-      try {
-        // console.log({text: comment, rate: rate})
-        const response = await fetch(`/api/users/${auth.id}/${businessId.id}/reviews`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({text: comment, rate: rate}),
-        });
-        const json = await response.json();
-        if (response.ok){
-          console.log("json",json)
-          setReviews([...reviews, json]);
-          console.log("reviews",reviews)
-          
-        }
-        else {
-          console.error(json.message);
-          throw new Error(json.message);
-          
-        }
-      } catch (error) {
-          console.error(error.message);
-          setError(error.message)
-      }
-    }  
+    } catch (error) {
+        console.error(error.message);
+        setError(error.message)
+    }
+  }  
+  
   return (
     <>
-      <h1>List of Reviews { reviews.length }</h1>
-      <ul>
-      {reviews.map((review, index) => {
-        // Directly access the business name using the review's business_id
-        const business = businesses.find(business => (business.id === review.business_id));
-        return <li key={index}>{business.name} - Review is: {review.text} - Rate is: {review.rate}</li>;
-      })}
-      </ul>
+      <h1>Create Reviews</h1>
+        {!!addedReview && (
+          <>
+            <h3>Review successfully Added:</h3>
+            <h4>{selectedOption} --{">"} Comment: {addedReview.text} - Rate: {addedReview.rate}</h4>
+          </>
+        )}
+
+
       <form onSubmit={ submit }>
         { !!error && <div className='error'>{ error }</div> }
         <select 

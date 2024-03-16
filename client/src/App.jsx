@@ -33,7 +33,31 @@ function App() {
       }
     }
   };
-
+  
+  const createAction = async({businessId, comment, rate}) => {
+            // console.log({text: comment, rate: rate})
+    const response = await fetch(`/api/users/${auth.id}/${businessId.id}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({text: comment, rate: rate}),
+    });
+    const json = await response.json();
+    if (response.ok){
+      console.log("review",json)
+      setReviews([...reviews, json]);
+      
+      
+    }
+    else {
+      console.error(json.message);
+      throw new Error(json.message);
+      
+    }
+  // console.log("reviews",reviews)
+  return (json)
+    
+  };
+  
   const authAction = async(credentials, mode)=> {
     const response = await fetch(`/api/auth/${mode}`, {
       method: 'POST',
@@ -44,12 +68,15 @@ function App() {
     });
 
     const json = await response.json();
-    console.log(json)
+    console.log("json.user.user]: ", json.user)
     if(response.ok){
-      window.localStorage.setItem('token', json.token);
+      window.localStorage.setItem('token', json.token.token);
       attemptLoginWithToken();
-      setUsers([...users, json]);
-    }
+      
+      if (mode == 'register'){
+        setUsers([...users, json.user]);
+      }
+    }  
     else {
       throw json;
     }
@@ -116,10 +143,10 @@ function App() {
           />
         } />
         <Route path='/businesses' element={<Businesses businesses={ businesses } />} />
-        <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } />} />
+        <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
         <Route path='/users' element={<Users users={ users}/>} />
         {
-          !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses }/>} />
+          !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses } createAction = { createAction }/>} />
         }
       </Routes>
     </>

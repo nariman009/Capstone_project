@@ -34,7 +34,8 @@ const isLoggedIn = async(req, res, next)=> {
 
 app.post('/api/auth/login', async(req, res, next)=> {
   try {
-    res.send(await authenticate(req.body));
+    const token = await authenticate(req.body);
+    res.send({token});
   }
   catch(ex){
     next(ex);
@@ -44,7 +45,10 @@ app.post('/api/auth/login', async(req, res, next)=> {
 app.post('/api/auth/register', async(req, res, next)=> {
   try {
     const user = await createUser(req.body);
-    res.send(await authenticate(req.body));
+    const token = await authenticate(req.body);
+    res.send({
+      user, token
+    });
   }
   catch(ex){
     next(ex);
