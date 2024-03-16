@@ -11,6 +11,13 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
         <br />
         Users can add review for each business. There are { reviews.length } reviews so far.
       </p>
+      <ul>
+      {reviews.map((review, index) => {
+        // Directly access the business name using the review's business_id
+        const business = businesses.find(business => (business.id === review.business_id));
+        return <li key={index}>{business.name} - Review is: {review.text} - Rate is: {review.rate}</li>;
+      })}
+      </ul>
       {
         !auth.id ? <>
           <AuthForm authAction={ authAction } mode='login'/>

@@ -80,20 +80,16 @@ app.get('/api/businesses',  async(req, res, next)=> {
   }
 });
 
-app.get('/api/users/reviews',  async(req, res, next)=> {
+app.get('/api/reviews',  async(req, res, next)=> {
   try {
 
-    // if(req.params.user_id !== req.user.id){
-    //   const error = Error('not authorized');
-    //   error.status = 401;
-    //   throw error;
-    // }
     res.send(await fetchReviews());
   }
   catch(ex){
       next(ex);
   }
 });
+
 
 app.delete('/api/users/:user_id/:business_id/reviews/:id',  async(req, res, next)=> {
     try {
@@ -114,19 +110,12 @@ app.delete('/api/users/:user_id/:business_id/reviews/:id',  async(req, res, next
 
 app.post('/api/users/:userId/:selectedOption/reviews',  async(req, res, next)=> {
     try {
-        // console.log("add user fav ",req.params.user_id);
-        // console.log("add user fav ",req.user.id);
-        // if(req.params.user_id !== req.user.id){
-        //   const error = Error('not authorized');
-        //   error.status = 401;
-        //   throw error;
-        // }
-        
+
         console.log({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate})
         res.status(201).send(await createReview({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate}));
     }
     catch(ex){
-        next(ex);
+      return res.status(400).send({message: 'already exists'});
     }
 });
 

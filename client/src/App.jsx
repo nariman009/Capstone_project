@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, Route, Routes } from 'react-router-dom';
 import Users from './Users';
 import Businesses from './Businesses';
+import Reviews from './Reviews';
 import CreateReview from './CreateReview';
 import Home from './Home';
 
@@ -43,9 +44,11 @@ function App() {
     });
 
     const json = await response.json();
+    console.log(json)
     if(response.ok){
       window.localStorage.setItem('token', json.token);
       attemptLoginWithToken();
+      setUsers([...users, json]);
     }
     else {
       throw json;
@@ -79,7 +82,7 @@ function App() {
   
   useEffect(()=> {
     const fetchReviews = async()=> {
-      const response = await fetch('/api/users/reviews');
+      const response = await fetch('/api/reviews');
       const json = await response.json();
       setReviews(json);
     };
@@ -93,6 +96,7 @@ function App() {
       <nav>
         <Link to='/'>Home</Link>
         <Link to='/businesses'>Businesses ({ businesses.length })</Link>
+        <Link to='/reviews'>Reviews ({ reviews.length })</Link>
         <Link to='/users'>Users ({ users.length })</Link>
         {
           auth.id ? <Link to='/createReview'>Create Review</Link> : <Link to='/'>Register/Login</Link>
@@ -112,9 +116,10 @@ function App() {
           />
         } />
         <Route path='/businesses' element={<Businesses businesses={ businesses } />} />
+        <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } />} />
         <Route path='/users' element={<Users users={ users}/>} />
         {
-          !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } reviews={ reviews } businesses={ businesses }/>} />
+          !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses }/>} />
         }
       </Routes>
     </>
