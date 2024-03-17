@@ -5,6 +5,8 @@ import Businesses from './Businesses';
 import Reviews from './Reviews';
 import CreateReview from './CreateReview';
 import Home from './Home';
+import BusinessesReviews from './BusinessesReviews';
+
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -142,12 +144,14 @@ function App() {
             reviews = { reviews }
           />
         } />
-        <Route path='/businesses' element={<Businesses businesses={ businesses } />} />
+        <Route path='/businesses' element={<Businesses businesses={ businesses } reviews={reviews}/>} />
         <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
         <Route path='/users' element={<Users users={ users}/>} />
+        <Route path='/businesses/:businessId' element={<BusinessesReviews businesses={ businesses } reviews={reviews} users={users} />} />
         {
           !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses } createAction = { createAction }/>} />
         }
+        
       </Routes>
     </>
   )

@@ -4,14 +4,16 @@ import { useState, useEffect } from 'react'
 
 const CReview = ({ createAction, businesses })=> {
   // const [businesses, setBusinesses] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(businesses[0]?.name || '');
+  const [selectedOption, setSelectedOption] = useState('');
   const [comment, setComment] = useState('');
   const [rate, setRate] = useState('');
   const [error, setError] = useState('');
   // const [reviews, setReviews] = useState([]);
   const [addedReview, setAddedReview] = useState('');
 
-  
+  // const [selectedRate, setSelectedRate] = useState('');
+
+  const numbers = [1.0, 2.0, 3.0, 4.0, 5.0];
   // console.log("userId ", auth.id);
   // console.log("selectedOption ", selectedOption);
   
@@ -37,7 +39,7 @@ const CReview = ({ createAction, businesses })=> {
         {!!addedReview && (
           <>
             <h3>Review successfully Added:</h3>
-            <h4>{selectedOption} --{">"} Comment: {addedReview.text} - Rate: {addedReview.rate}</h4>
+            <h4>{selectedOption} --{">"} Comment: {addedReview.text} - Rate: {rate}</h4>
           </>
         )}
 
@@ -45,17 +47,30 @@ const CReview = ({ createAction, businesses })=> {
       <form onSubmit={ submit }>
         { !!error && <div className='error'>{ error }</div> }
         <select 
-            value={selectedOption} 
-            onChange={e => setSelectedOption(e.target.value)}
+          value={selectedOption} 
+          onChange={e => setSelectedOption(e.target.value)}
+          defaultValue=""
         >
-            {businesses.map((business, index) => (
-                <option key={index} value={business.name}>
-                    {business.name}
-                </option>
-            ))}
+          <option value="" disabled>Select a business...</option>
+          {businesses.map((business, index) => (
+            <option key={index} value={business.name}>
+              {business.name}
+            </option>
+          ))}
         </select>
-        <input value={ comment } placeholder='comment' onChange={ ev=> setComment(ev.target.value)}/>
-        <input value={ rate} placeholder='rate' onChange={ ev=> setRate(ev.target.value)}/>
+        <input value={ comment } placeholder='Write your comments' onChange={ ev=> setComment(ev.target.value)}/>
+        <select
+          value={rate}
+          onChange={e => setRate(e.target.value)}
+          defaultValue=""
+        >
+          <option value="" disabled>Choose a rate...</option>
+          {numbers.map(number => (
+            <option key={number} value={number}>
+              {number}
+            </option>
+          ))}
+        </select>
         <button >Submit</button>
       </form>
     </>
