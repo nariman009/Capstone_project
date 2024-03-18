@@ -38,6 +38,9 @@ app.post('/api/auth/login', async(req, res, next)=> {
     res.send({token});
   }
   catch(ex){
+    if (ex.message === 'not authorized'){
+      ex.message = 'Not registered.';
+    } 
     next(ex);
   }
 });
@@ -46,12 +49,13 @@ app.post('/api/auth/register', async(req, res, next)=> {
   try {
     const user = await createUser(req.body);
     const token = await authenticate(req.body);
-    res.send({
-      user, token
-    });
+    res.send({user, token});
   }
-  catch(ex){
-    next(ex);
+  catch(ex) {
+    if (ex.code === '23505'){
+      ex.message = 'User already exists.';
+    }  
+    next(ex)
   }
 });
 
@@ -95,16 +99,16 @@ app.get('/api/reviews',  async(req, res, next)=> {
 });
 
 
-app.delete('/api/users/:user_id/:business_id/reviews/:id',  async(req, res, next)=> {
+app.delete('/api/users/:user_id/reviews/:id',  async(req, res, next)=> {
     try {
         // console.log("del user fav ",req.params.user_id);
         // console.log("del user fav ",req.user.id);
-        if(req.params.user_id !== req.user.id){
-          const error = Error('not authorized');
-          error.status = 401;
-          throw error;
-        }
-        await destroyReview({user_id: req.params.user_id, id: req.params.id});
+        // if(req.params.user_id !== req.user.id){
+        //   const error = Error('not authorized');
+        //   error.status = 401;
+        //   throw error;
+        // }
+        await destroyReview(req.params.id);
         res.sendStatus(204);
     }
     catch(ex){
@@ -115,11 +119,11 @@ app.delete('/api/users/:user_id/:business_id/reviews/:id',  async(req, res, next
 app.post('/api/users/:userId/:selectedOption/reviews',  async(req, res, next)=> {
     try {
 
-        console.log({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate})
+        // console.log({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate})
         res.status(201).send(await createReview({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate}));
     }
     catch(ex){
-      return res.status(400).send({message: 'already exists'});
+      return res.status(400).send({message: 'Review already exists'});
     }
 });
 
@@ -150,19 +154,19 @@ const init = async()=> {
   await client.connect();
   console.log('connected to database');
 
-  await createTables();
-  console.log('tables created');
+  // await createTables();
+  // console.log('tables created');
 
-const [moe, lucy, ethyl, curly, costco, walmart, albertsons, rouses] = await Promise.all([
-  createUser({ username: 'moe', password: 'm_pw'}),
-  createUser({ username: 'lucy', password: 'l_pw'}),
-  createUser({ username: 'ethyl', password: 'e_pw'}),
-  createUser({ username: 'curly', password: 'c_pw'}),
-  createBusiness({ name: 'Costco'}),
-  createBusiness({ name: 'Walmart'}),
-  createBusiness({ name: 'Albertsons'}),
-  createBusiness({ name: 'Rouses'}),
-]);
+// const [moe, lucy, ethyl, curly, costco, walmart, albertsons, rouses] = await Promise.all([
+//   createUser({ username: 'moe', password: 'm_pw'}),
+//   createUser({ username: 'lucy', password: 'l_pw'}),
+//   createUser({ username: 'ethyl', password: 'e_pw'}),
+//   createUser({ username: 'curly', password: 'c_pw'}),
+//   createBusiness({ name: 'Costco'}),
+//   createBusiness({ name: 'Walmart'}),
+//   createBusiness({ name: 'Albertsons'}),
+//   createBusiness({ name: 'Rouses'}),
+// ]);
 
 // const review = createReview({ user_id: moe.id, business_id: costco.id, text: "Good Review" });
 

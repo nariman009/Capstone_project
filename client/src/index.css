@@ -7,11 +7,10 @@ form {
   display: flex;
   flex-direction: column;
   width: 300px;
-
 }
 
 form > * {
-  margin: 0.5rem;
+  margin: 0.75rem;
 }
 
 nav {
@@ -22,8 +21,16 @@ nav {
   align-items: center
 }
 
+ul > * {
+  margin: 0.5rem;
+}
+
 .error {
   background-color: tomato;
   padding: 0.5rem;
   color: cornSilk;
+}
+
+.mainTitle {
+  text-align: center
 }

@@ -8,7 +8,11 @@ const Reviews = ({ reviews, businesses, users })=> {
         const business = businesses.find(business => (business.id === review.business_id));
         const user = users.find(user => (user.id === review.user_id));
         
-        return <li key={index}>{user.username}: {business.name} - Review is: {review.text} - Rate is: {review.rate}</li>;
+        return (
+          <li key={index}>
+            {business.name} --{">"} Review By: {user.username}: - Comment: {review.text} - Rate: {review.rate}
+          </li>
+        );  
       })}
       </ul>
     </>

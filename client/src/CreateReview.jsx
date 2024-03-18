@@ -39,7 +39,7 @@ const CReview = ({ createAction, businesses })=> {
         {!!addedReview && (
           <>
             <h3>Review successfully Added:</h3>
-            <h4>{selectedOption} --{">"} Comment: {addedReview.text} - Rate: {rate}</h4>
+            <h4>{selectedOption} --{">"} Comment: {addedReview.text} , Rate: {rate}</h4>
           </>
         )}
 

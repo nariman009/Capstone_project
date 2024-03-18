@@ -8,11 +8,12 @@ if(JWT === 'shhh'){
   console.log('If deployed, set process.env.JWT to something other than shhh');
 }
 
+    // DROP TABLE IF EXISTS reviews;
+    // DROP TABLE IF EXISTS users;
+    // DROP TABLE IF EXISTS businesses;
 const createTables = async()=> {
   const SQL = `
-    DROP TABLE IF EXISTS reviews;
-    DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS businesses;
+
     
     CREATE TABLE users(
       id UUID PRIMARY KEY,
@@ -133,13 +134,13 @@ const fetchReviews = async()=> {
   return response.rows;
 };
 
-const destroyReview = async({ id, user_id, business_id }) => {
-  console.log(id, user_id);
+const destroyReview = async(id) => {
+  console.log("id in db", id);
   const SQL = `
       DELETE FROM reviews
-      WHERE id = $1 AND user_id=$2 AND busines_id = $2
+      WHERE id = $1
   `;
-  await client.query(SQL, [id, user_id]);
+  await client.query(SQL, [id]);
 };
 
 const updateReview = async ({ id, user_id, business_id, text, rate }) => {

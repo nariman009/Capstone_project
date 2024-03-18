@@ -6,7 +6,7 @@ import Reviews from './Reviews';
 import CreateReview from './CreateReview';
 import Home from './Home';
 import BusinessesReviews from './BusinessesReviews';
-
+import UsersReviews from './UsersReviews';
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -59,6 +59,28 @@ function App() {
   return (json)
     
   };
+  
+  // const deleteAction = async(reviewId) => {
+  //           // console.log({text: comment, rate: rate})
+  //   const response = await fetch(`/api/users/${auth.id}/reviews/${reviewId}`, {
+  //     method: 'DELETE',
+  //     headers: { 'Content-Type': 'application/json' },
+
+  //   });
+  //   const json = await response.json();
+  //   if (response.ok){
+  //     console.log("review",json)
+  //     setReviews(reviews => reviews.filter(review => review.id !== reviewId));
+  //   }
+  //   else {
+  //     console.error(json.message);
+  //     throw new Error(json.message);
+      
+  //   }
+  // // console.log("reviews",reviews)
+  // return (json)
+    
+  // };
   
   const authAction = async(credentials, mode)=> {
     const response = await fetch(`/api/auth/${mode}`, {
@@ -121,19 +143,23 @@ function App() {
 
   return (
     <>
-      <h1>Acme Business Reviews</h1>
+      <h1 className="mainTitle">Acme Business Reviews</h1>
+
       <nav>
         <Link to='/'>Home</Link>
         <Link to='/businesses'>Businesses ({ businesses.length })</Link>
         <Link to='/reviews'>Reviews ({ reviews.length })</Link>
         <Link to='/users'>Users ({ users.length })</Link>
         {
-          auth.id ? <Link to='/createReview'>Create Review</Link> : <Link to='/'>Register/Login</Link>
+          !!auth.id ? <Link to='/createReview'>Create Review</Link> : <Link to='/'>Register/Login</Link>
         }
-     </nav>
-    {
-      auth.id && <button onClick={ logout }>Logout { auth.username }</button>
-    }
+        {
+          !!auth.id && <button onClick={ logout }>Logout "{ auth.username }"</button>
+        }
+      </nav>
+      {
+        !!auth.id && <h3>Welcome to Business Reviews "{ auth.username }"</h3>
+      } 
       <Routes>
         <Route path='/' element={
           <Home
@@ -146,12 +172,14 @@ function App() {
         } />
         <Route path='/businesses' element={<Businesses businesses={ businesses } reviews={reviews}/>} />
         <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
-        <Route path='/users' element={<Users users={ users}/>} />
+        <Route path='/users' element={<Users users={ users} reviews={ reviews } />} />
         <Route path='/businesses/:businessId' element={<BusinessesReviews businesses={ businesses } reviews={reviews} users={users} />} />
+        <Route path='/users/:userId' element={<UsersReviews auth = { auth } businesses={ businesses } reviews={reviews} users={users} />} />
+
         {
           !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses } createAction = { createAction }/>} />
         }
-        
+
       </Routes>
     </>
   )
