@@ -8,24 +8,10 @@ const UsersReviews = ({ auth, reviews, users, businesses })=> {
   const user = users.find(user => (user.id === userId));
 
   useEffect(() => {
-    // Filter reviews based on the businessId from URL params
     const filteredReviews = reviews.filter(review => review.user_id === userId);
     setuserReviews(filteredReviews);
   }, [userId, reviews]);
-  
-  // const onDeleteReview = async ({reviewId}) => {
-  //   try {
-  //     const response = await deleteAction({reviewId})
-  //     if (!response.ok) {
-  //     throw new Error('Failed to delete the review.');
-  //     }
-  //     setuserReviews(filteredReviews => filteredReviews.filter(review => review.id !== reviewId));
-  //     // console.log("returend",returned)
-      
-  //   } catch (error) {
-  //       console.error(error.message);
-  //   }
-  // } 
+
   const deleteAction = async(reviewId) => {
     console.log("reviewId: ", reviewId)
     

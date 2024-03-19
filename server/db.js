@@ -8,17 +8,18 @@ if(JWT === 'shhh'){
   console.log('If deployed, set process.env.JWT to something other than shhh');
 }
 
-    // DROP TABLE IF EXISTS reviews;
-    // DROP TABLE IF EXISTS users;
-    // DROP TABLE IF EXISTS businesses;
+
 const createTables = async()=> {
   const SQL = `
-
+    DROP TABLE IF EXISTS reviews;
+    DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS businesses;
     
     CREATE TABLE users(
       id UUID PRIMARY KEY,
       username VARCHAR(20) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL
+      password VARCHAR(255) NOT NULL,
+      is_admin BOOLEAN DEFAULT FALSE
     );
     CREATE TABLE businesses(
       id UUID PRIMARY KEY,
@@ -52,7 +53,7 @@ const createUser = async({ username, password})=> {
 
 const authenticate = async({ username, password })=> {
   const SQL = `
-    SELECT id, username, password FROM users WHERE username=$1;
+    SELECT id, username, password, is_admin FROM users WHERE username=$1;
   `;
   const response = await client.query(SQL, [username]);
   if(!response.rows.length || (await bcrypt.compare(password, response.rows[0].password)) === false){
@@ -60,8 +61,9 @@ const authenticate = async({ username, password })=> {
     error.status = 401;
     throw error;
   }
-  const token = await jwt.sign({ id: response.rows[0].id}, JWT);
-  return { token };
+  const user = response.rows[0];
+  const token = await jwt.sign({ id: user.id, is_admin: user.is_admin}, JWT);
+  return { token, user: { id: user.id, username: user.username, is_admin: user.is_admin } };
 };
 
 const findUserWithToken = async(token)=> {
@@ -76,7 +78,7 @@ const findUserWithToken = async(token)=> {
     throw error;
   }
   const SQL = `
-    SELECT id, username FROM users WHERE id = $1;
+    SELECT id, username, is_admin FROM users WHERE id = $1;
   `;
   const response = await client.query(SQL, [id]);
   if(!response.rows.length){
@@ -89,7 +91,7 @@ const findUserWithToken = async(token)=> {
 
 const fetchUsers = async()=> {
   const SQL = `
-    SELECT id, username FROM users;
+    SELECT id, username, is_admin FROM users;
   `;
   const response = await client.query(SQL);
   return response.rows;
@@ -153,7 +155,21 @@ const updateReview = async ({ id, user_id, business_id, text, rate }) => {
   await client.query(SQL, [text, id, user_id]);
 };
 
+const setAdministrator = async(userId) => {
+  const SQL = `
+    UPDATE users SET is_admin = TRUE WHERE id = $1 RETURNING *
+  `;
+  const response = await client.query(SQL, [userId]);
+  return response.rows[0];
+};
 
+const unsetAdministrator = async(userId) => {
+  const SQL = `
+    UPDATE users SET is_admin = FALSE WHERE id = $1 RETURNING *
+  `;
+  const response = await client.query(SQL, [userId]);
+  return response.rows[0];
+};
 
 module.exports = {
   client,
@@ -167,5 +183,7 @@ module.exports = {
   fetchBusinesses,
   fetchReviews,
   destroyReview,
-  updateReview
+  updateReview,
+  setAdministrator,
+  unsetAdministrator
 };

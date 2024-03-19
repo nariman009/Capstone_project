@@ -36,6 +36,46 @@ function App() {
     }
   };
   
+  const handleSetAdmin = async (userId) => {
+    try {
+      console.log(userId)
+      const response = await fetch(`/api/users/${userId}/set_admin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: auth.token
+        },
+        body: JSON.stringify({ is_admin: true }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update user role');
+      }
+      setUsers(users.map(user => user.id === userId ? {...user, is_admin: true} : user));
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
+  
+  const handleUnsetAdmin = async (userId) => {
+    try {
+      console.log("userId", userId)
+      const response = await fetch(`/api/users/${userId}/unset_admin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: auth.token
+        },
+        body: JSON.stringify({ is_admin: false }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update user role');
+      }
+      setUsers(users.map(user => user.id === userId ? {...user, is_admin: false} : user));
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
+  
   const createAction = async({businessId, comment, rate}) => {
     // console.log({text: comment, rate: rate})
     const response = await fetch(`/api/users/${auth.id}/${businessId.id}/reviews`, {
@@ -47,17 +87,12 @@ function App() {
     if (response.ok){
       console.log("review",json)
       setReviews([...reviews, json]);
-      
-      
     }
     else {
       console.error(json.message);
       throw new Error(json.message);
-      
     }
-    // console.log("reviews",reviews)
   return (json)
-    
   };
   
   const authAction = async(credentials, mode)=> {
@@ -70,12 +105,12 @@ function App() {
     });
 
     const json = await response.json();
-    console.log("json.user.user]: ", json.user)
+    // console.log("user]: ", json.user)
     if(response.ok){
       window.localStorage.setItem('token', json.token.token);
       attemptLoginWithToken();
       
-      if (mode == 'register'){
+      if (mode == 'Register'){
         setUsers([...users, json.user]);
       }
     }  
@@ -87,8 +122,6 @@ function App() {
   const logout = ()=> {
     window.localStorage.removeItem('token');
     setAuth({});
-    window.location.href = '/';
-
   };
   
   useEffect(()=> {
@@ -152,7 +185,7 @@ function App() {
         } />
         <Route path='/businesses' element={<Businesses businesses={ businesses } reviews={reviews}/>} />
         <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
-        <Route path='/users' element={<Users users={ users} reviews={ reviews } />} />
+        <Route path='/users' element={<Users auth = { auth } users={ users} reviews={ reviews } handleSetAdmin={ handleSetAdmin } handleUnsetAdmin={ handleUnsetAdmin } />} />
         <Route path='/businesses/:businessId' element={<BusinessesReviews businesses={ businesses } reviews={reviews} users={users} />} />
         <Route path='/users/:userId' element={<UsersReviews auth = { auth } businesses={ businesses } reviews={reviews} users={users} />} />
 

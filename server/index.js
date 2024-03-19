@@ -11,6 +11,8 @@ const {
   fetchReviews,
   destroyReview,
   updateReview,
+  setAdministrator,
+  unsetAdministrator
 } = require('./db');
 const express = require('express');
 const app = express();
@@ -31,6 +33,37 @@ const isLoggedIn = async(req, res, next)=> {
   }
 };
 
+app.post('/api/users/:userId/set_admin', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    // if (!req.user.is_admin) {
+    //   return res.status(403).send({ error: "Not authorized" });
+    // }
+    const updatedUser = await setAdministrator(userId);
+    if (updatedUser) {
+      res.status(200).send({ message: "User role updated to admin" });
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+app.post('/api/users/:userId/unset_admin', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const updatedUser = await unsetAdministrator(userId);
+    
+    if (updatedUser) {
+      res.status(200).send({ message: "User role updated to admin" });
+    } else {
+      res.status(404).send({ error: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).send({ error: "Server error" });
+  }
+});
 
 app.post('/api/auth/login', async(req, res, next)=> {
   try {
@@ -45,7 +78,7 @@ app.post('/api/auth/login', async(req, res, next)=> {
   }
 });
 
-app.post('/api/auth/register', async(req, res, next)=> {
+app.post('/api/auth/Register', async(req, res, next)=> {
   try {
     const user = await createUser(req.body);
     const token = await authenticate(req.body);
@@ -154,24 +187,28 @@ const init = async()=> {
   await client.connect();
   console.log('connected to database');
 
-  // await createTables();
-  // console.log('tables created');
+  await createTables();
+  console.log('tables created');
 
-// const [moe, lucy, ethyl, curly, costco, walmart, albertsons, rouses] = await Promise.all([
-//   createUser({ username: 'moe', password: 'm_pw'}),
-//   createUser({ username: 'lucy', password: 'l_pw'}),
-//   createUser({ username: 'ethyl', password: 'e_pw'}),
-//   createUser({ username: 'curly', password: 'c_pw'}),
-//   createBusiness({ name: 'Costco'}),
-//   createBusiness({ name: 'Walmart'}),
-//   createBusiness({ name: 'Albertsons'}),
-//   createBusiness({ name: 'Rouses'}),
-// ]);
+const [moe, lucy, ethyl, curly, nariman, costco, walmart, albertsons, rouses] = await Promise.all([
+  createUser({ username: 'moe', password: 'm_pw'}),
+  createUser({ username: 'lucy', password: 'l_pw'}),
+  createUser({ username: 'ethyl', password: 'e_pw'}),
+  createUser({ username: 'curly', password: 'c_pw'}),
+  createUser({ username: 'nariman', password: '123'}),
+
+  createBusiness({ name: 'Costco'}),
+  createBusiness({ name: 'Walmart'}),
+  createBusiness({ name: 'Albertsons'}),
+  createBusiness({ name: 'Rouses'}),
+]);
 
 // const review = createReview({ user_id: moe.id, business_id: costco.id, text: "Good Review" });
 
 
-  console.log(await fetchUsers());
+  // console.log(await fetchUsers());
+  await setAdministrator(nariman.id);
+  console.log('Administrator set.');
 
   app.listen(port, ()=> console.log(`listening on port ${port}`));
 };
