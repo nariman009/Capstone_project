@@ -1,5 +1,6 @@
 import { Link, Route, Routes } from 'react-router-dom';
-// import BusinessReviews from './BusinessesReviews';
+import React from 'react';
+import Rating from 'react-rating';
 
 const Businesses = ({ businesses, reviews })=> {
 
@@ -15,7 +16,18 @@ const Businesses = ({ businesses, reviews })=> {
 
 
           
-          return <li key={index}><Link to={`/businesses/${business.id}`}>{business.name}</Link> --{">"} Ave.Rate ({average})</li>
+          return (
+            <li key={index}>
+              <Link to={`/businesses/${business.id}`}>{business.name}</Link> --{">"} Ave.Rate ({average})&nbsp;&nbsp;
+              <Rating 
+                initialRating={average}
+                readonly
+                emptySymbol={<span className="icon">☆</span>}
+                fullSymbol={<span className="icon">★</span>}
+                fractions={4}
+              />
+            </li>
+          )
         })}
       </ul>
     </>

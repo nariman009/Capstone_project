@@ -37,7 +37,7 @@ function App() {
   };
   
   const createAction = async({businessId, comment, rate}) => {
-            // console.log({text: comment, rate: rate})
+    // console.log({text: comment, rate: rate})
     const response = await fetch(`/api/users/${auth.id}/${businessId.id}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -55,32 +55,10 @@ function App() {
       throw new Error(json.message);
       
     }
-  // console.log("reviews",reviews)
+    // console.log("reviews",reviews)
   return (json)
     
   };
-  
-  // const deleteAction = async(reviewId) => {
-  //           // console.log({text: comment, rate: rate})
-  //   const response = await fetch(`/api/users/${auth.id}/reviews/${reviewId}`, {
-  //     method: 'DELETE',
-  //     headers: { 'Content-Type': 'application/json' },
-
-  //   });
-  //   const json = await response.json();
-  //   if (response.ok){
-  //     console.log("review",json)
-  //     setReviews(reviews => reviews.filter(review => review.id !== reviewId));
-  //   }
-  //   else {
-  //     console.error(json.message);
-  //     throw new Error(json.message);
-      
-  //   }
-  // // console.log("reviews",reviews)
-  // return (json)
-    
-  // };
   
   const authAction = async(credentials, mode)=> {
     const response = await fetch(`/api/auth/${mode}`, {
@@ -109,6 +87,8 @@ function App() {
   const logout = ()=> {
     window.localStorage.removeItem('token');
     setAuth({});
+    window.location.href = '/';
+
   };
   
   useEffect(()=> {
