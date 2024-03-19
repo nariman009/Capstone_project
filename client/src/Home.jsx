@@ -37,12 +37,13 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
       reviewCount: filteredReviews.length
     };
   });
-
+  if (businessesWithAverage.length > 0) {
   // Sort businesses by their average rating, in descending order
-  const sortedBusinesses = businessesWithAverage.sort((a, b) => b.averageRate - a.averageRate);
-
+    const sortedBusinesses = businessesWithAverage.sort((a, b) => b.averageRate - a.averageRate);
+    const topThreeBusinesses = sortedBusinesses.slice(0, 3);
+  }
   // Select the top three businesses
-  const topThreeBusinesses = sortedBusinesses.slice(0, 3);
+  
   
   return (
     <div className="mainHome">
