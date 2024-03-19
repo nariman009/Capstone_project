@@ -5,27 +5,6 @@ import Rating from 'react-rating';
 import AuthForm from './AuthForm';
 import homeImage from './assets/Review-a-Business.png';
 
-
-const BusinessList = ({ businesses, reviews }) => {
-  const businessesWithAverage = businesses.map(business => {
-    const filteredReviews = reviews.filter(review => review.business_id === business.id);
-    const averageRate = filteredReviews.reduce((acc, curr) => acc + Number(curr.rate), 0) / filteredReviews.length;
-    return {
-      ...business,
-      averageRate: isNaN(averageRate) ? 0 : Number(averageRate.toFixed(1)), // Guard against NaN
-      reviewCount: filteredReviews.length
-    };
-  });
-
-  // Sort businesses by their average rating, in descending order
-  const sortedBusinesses = businessesWithAverage.sort((a, b) => b.averageRate - a.averageRate);
-
-  // Select the top three businesses
-  const topThreeBusinesses = sortedBusinesses.slice(0, 3);
-  
-};
-
-
 const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
   
   const businessesWithAverage = businesses.map(business => {
@@ -42,8 +21,6 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
     const sortedBusinesses = businessesWithAverage.sort((a, b) => b.averageRate - a.averageRate);
     const topThreeBusinesses = sortedBusinesses.slice(0, 3);
   }
-  // Select the top three businesses
-  
   
   return (
     <div className="mainHome">
