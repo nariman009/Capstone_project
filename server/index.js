@@ -12,7 +12,8 @@ const {
   destroyReview,
   updateReview,
   setAdministrator,
-  unsetAdministrator
+  unsetAdministrator,
+  destroyBusiness
 } = require('./db');
 const express = require('express');
 const app = express();
@@ -117,7 +118,7 @@ app.get('/api/businesses',  async(req, res, next)=> {
     res.send(await fetchBusinesses());
   }
   catch(ex){
-      next(ex);
+    next(ex);
   }
 });
 
@@ -131,21 +132,29 @@ app.get('/api/reviews',  async(req, res, next)=> {
   }
 });
 
+app.delete('/api/businesses/:id',  async(req, res, next)=> {
+    try {
+
+      await destroyBusiness(req.params.id);
+      res.sendStatus(204);
+    }
+    catch(ex){
+      if (ex.code === '23503'){
+        ex.message = 'This business has some reviews.';
+    }
+      next(ex);
+    }
+});
 
 app.delete('/api/users/:user_id/reviews/:id',  async(req, res, next)=> {
     try {
-        // console.log("del user fav ",req.params.user_id);
-        // console.log("del user fav ",req.user.id);
-        // if(req.params.user_id !== req.user.id){
-        //   const error = Error('not authorized');
-        //   error.status = 401;
-        //   throw error;
-        // }
-        await destroyReview(req.params.id);
-        res.sendStatus(204);
+
+      await destroyReview(req.params.id);
+      res.sendStatus(204);
     }
     catch(ex){
-        next(ex);
+ 
+      next(ex);
     }
 });
 

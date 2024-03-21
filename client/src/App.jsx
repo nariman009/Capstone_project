@@ -77,7 +77,7 @@ function App() {
   };
   
   const createAction = async({businessId, comment, rate}) => {
-    // console.log({text: comment, rate: rate})
+    console.log({"auth.id": auth.id, "businessId": businessId.id})
     const response = await fetch(`/api/users/${auth.id}/${businessId.id}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -103,7 +103,6 @@ function App() {
         'Content-Type': 'application/json'
       }
     });
-
     const json = await response.json();
     // console.log("user]: ", json.user)
     if(response.ok){
@@ -183,11 +182,11 @@ function App() {
             reviews = { reviews }
           />
         } />
-        <Route path='/businesses' element={<Businesses businesses={ businesses } reviews={reviews}/>} />
+        <Route path='/businesses' element={<Businesses businesses={ businesses } setBusinesses={setBusinesses} reviews={reviews}/>} />
         <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
         <Route path='/users' element={<Users auth = { auth } users={ users} reviews={ reviews } handleSetAdmin={ handleSetAdmin } handleUnsetAdmin={ handleUnsetAdmin } />} />
         <Route path='/businesses/:businessId' element={<BusinessesReviews businesses={ businesses } reviews={reviews} users={users} />} />
-        <Route path='/users/:userId' element={<UsersReviews auth = { auth } businesses={ businesses } reviews={reviews} users={users} />} />
+        <Route path='/users/:userId' element={<UsersReviews auth = { auth } businesses={ businesses } reviews={reviews} setReviews={setReviews} users={users} />} />
 
         {
           !!auth.id && <Route path='/createReview' element={<CreateReview auth = { auth } users = { users } businesses={ businesses } createAction = { createAction }/>} />

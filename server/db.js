@@ -145,6 +145,15 @@ const destroyReview = async(id) => {
   await client.query(SQL, [id]);
 };
 
+const destroyBusiness = async(id) => {
+  console.log("id in db", id);
+  const SQL = `
+      DELETE FROM businesses
+      WHERE id = $1
+  `;
+  await client.query(SQL, [id]);
+};
+  
 const updateReview = async ({ id, user_id, business_id, text, rate }) => {
   console.log(`Updating review ${id} for ${business_id} for user ${user_id}`);
   const SQL = `
@@ -185,5 +194,6 @@ module.exports = {
   destroyReview,
   updateReview,
   setAdministrator,
-  unsetAdministrator
+  unsetAdministrator,
+  destroyBusiness
 };

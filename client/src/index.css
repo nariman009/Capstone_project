@@ -41,6 +41,7 @@ ul > * {
   background-color: tomato;
   padding: 0.5rem;
   color: cornSilk;
+  width: auto;
 }
 
 .mainTitle {
