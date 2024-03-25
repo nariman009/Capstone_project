@@ -11,6 +11,7 @@ if(JWT === 'shhh'){
 
 const createTables = async()=> {
   const SQL = `
+
     DROP TABLE IF EXISTS reviews;
     DROP TABLE IF EXISTS users;
     DROP TABLE IF EXISTS businesses;
@@ -32,8 +33,7 @@ const createTables = async()=> {
       user_id UUID REFERENCES users(id) NOT NULL,
       business_id UUID REFERENCES businesses(id) NOT NULL,
       CONSTRAINT unique_review UNIQUE (user_id, business_id)
-
-);
+    );
   `;
   await client.query(SQL);
 };
@@ -99,9 +99,9 @@ const fetchUsers = async()=> {
 
 const createBusiness = async({ name })=> {
   const SQL = `
-      INSERT INTO businesses(id, name)
-      VALUES ($1, $2)
-      RETURNING *
+    INSERT INTO businesses(id, name)
+    VALUES ($1, $2)
+    RETURNING *
   `;
   const response = await client.query(SQL, [uuid.v4(), name ]);
   return response.rows[0];
@@ -109,8 +109,8 @@ const createBusiness = async({ name })=> {
 
 const fetchBusinesses = async()=> {
   const SQL = `
-      SELECT *
-      FROM businesses
+    SELECT *
+    FROM businesses
   `;
   const response = await client.query(SQL);
   return response.rows;
@@ -118,9 +118,9 @@ const fetchBusinesses = async()=> {
 
 const createReview = async({ user_id, business_id, text, rate })=> {
   const SQL = `
-      INSERT INTO reviews(id, user_id, business_id, text, rate)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *
+    INSERT INTO reviews(id, user_id, business_id, text, rate)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *
   `;
   const response = await client.query(SQL, [uuid.v4(), user_id, business_id, text, rate]);
   return response.rows[0];
@@ -128,8 +128,8 @@ const createReview = async({ user_id, business_id, text, rate })=> {
 
 const fetchReviews = async()=> {
   const SQL = `
-      SELECT *
-      FROM reviews
+    SELECT *
+    FROM reviews
 
   `;
   const response = await client.query(SQL);
@@ -139,8 +139,8 @@ const fetchReviews = async()=> {
 const destroyReview = async(id) => {
   console.log("id in db", id);
   const SQL = `
-      DELETE FROM reviews
-      WHERE id = $1
+    DELETE FROM reviews
+    WHERE id = $1
   `;
   await client.query(SQL, [id]);
 };
@@ -148,8 +148,8 @@ const destroyReview = async(id) => {
 const destroyBusiness = async(id) => {
   console.log("id in db", id);
   const SQL = `
-      DELETE FROM businesses
-      WHERE id = $1
+    DELETE FROM businesses
+    WHERE id = $1
   `;
   await client.query(SQL, [id]);
 };
@@ -157,9 +157,9 @@ const destroyBusiness = async(id) => {
 const updateReview = async ({ id, user_id, business_id, text, rate }) => {
   console.log(`Updating review ${id} for ${business_id} for user ${user_id}`);
   const SQL = `
-      UPDATE reviews
-      SET text = $4 AND rate = $5
-      WHERE id = $1 AND user_id = $2 AND business_id = $3
+    UPDATE reviews
+    SET text = $4 AND rate = $5
+    WHERE id = $1 AND user_id = $2 AND business_id = $3
   `;
   await client.query(SQL, [text, id, user_id]);
 };

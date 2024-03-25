@@ -1,4 +1,3 @@
-import React from 'react';
 import Rating from 'react-rating';
 
 const Reviews = ({ reviews, businesses, users })=> {
@@ -26,7 +25,6 @@ const Reviews = ({ reviews, businesses, users })=> {
       </ul>
     </>
   );
-}
-
+};
 
 export default Reviews;

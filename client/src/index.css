@@ -30,11 +30,19 @@ ul > * {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 20px 30px;
 }
 
 .authHome {
   display: flex;
   flex-direction: column;
+}
+
+.mainBusiness {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20px 30px;
 }
 
 .error {

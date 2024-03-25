@@ -24,6 +24,7 @@ const CReview = ({ createAction, businesses })=> {
     ev.preventDefault();
     try {
       const returned = await createAction({businessId, comment, rate})
+      setError('');
       setAddedReview(returned)
       console.log("returend",returned)
       
@@ -58,7 +59,7 @@ const CReview = ({ createAction, businesses })=> {
             </option>
           ))}
         </select>
-        <input value={ comment } placeholder='Write your comments' onChange={ ev=> setComment(ev.target.value)}/>
+        <input value={ comment } placeholder='Write your comments' onChange={ ev=> { setComment(ev.target.value); setError(''); }}/>
         <select
           value={rate}
           onChange={e => setRate(e.target.value)}

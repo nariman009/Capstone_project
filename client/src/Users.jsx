@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const Users = ({ auth, users, reviews, handleSetAdmin, handleUnsetAdmin })=> {
-  console.log("auth.id ", auth.id)
+  // console.log("auth.id ", auth.id);
   return (
     <>
       <h1>Number of Users: { users.length }</h1>
@@ -12,11 +12,8 @@ const Users = ({ auth, users, reviews, handleSetAdmin, handleUnsetAdmin })=> {
       <hr />
       <ul>
         {users.map((user, index) => {
-          // console.log(user.id);
-          // console.log(auth.id);
           
           return (
-
             <li key={index}>
               {auth.id ? (<Link to={`/users/${user.id}`}>{user.username}</Link>) : (<span>{user.username}</span>)} --{">"} Is Admin: {user.is_admin ? 'Yes' : 'No'}&nbsp;&nbsp;
               {auth.id && auth.is_admin && !user.is_admin && (
@@ -32,6 +29,5 @@ const Users = ({ auth, users, reviews, handleSetAdmin, handleUnsetAdmin })=> {
     </>
   );
 };
-
 
 export default Users;

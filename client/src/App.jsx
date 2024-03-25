@@ -182,7 +182,7 @@ function App() {
             reviews = { reviews }
           />
         } />
-        <Route path='/businesses' element={<Businesses businesses={ businesses } setBusinesses={setBusinesses} reviews={reviews}/>} />
+        <Route path='/businesses' element={<Businesses auth = { auth } businesses={ businesses } setBusinesses={setBusinesses} reviews={reviews}/>} />
         <Route path='/reviews' element={<Reviews businesses={ businesses } reviews={ reviews } users={ users } />} />
         <Route path='/users' element={<Users auth = { auth } users={ users} reviews={ reviews } handleSetAdmin={ handleSetAdmin } handleUnsetAdmin={ handleUnsetAdmin } />} />
         <Route path='/businesses/:businessId' element={<BusinessesReviews businesses={ businesses } reviews={reviews} users={users} />} />

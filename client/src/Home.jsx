@@ -1,5 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom';
-import React from 'react';
+import { Link} from 'react-router-dom';
 import Rating from 'react-rating';
 
 import AuthForm from './AuthForm';
@@ -12,7 +11,7 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
     const averageRate = filteredReviews.reduce((acc, curr) => acc + Number(curr.rate), 0) / filteredReviews.length;
     return {
       ...business,
-      averageRate: isNaN(averageRate) ? 0 : Number(averageRate.toFixed(1)), // Guard against NaN
+      averageRate: isNaN(averageRate) ? 0 : Number(averageRate.toFixed(1)),
       reviewCount: filteredReviews.length
     };
   });
@@ -50,7 +49,6 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
           })}
         </ul>
       </div>
-      
       <div>
         <img src={homeImage} alt="Home" className="image-size"/>
       </div>
@@ -66,7 +64,6 @@ const Home = ({ auth, authAction, logout, businesses, users, reviews })=> {
       </div>
     </div>
   );
-}
-
+};
 
 export default Home;

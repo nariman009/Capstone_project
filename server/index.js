@@ -37,9 +37,6 @@ const isLoggedIn = async(req, res, next)=> {
 app.post('/api/users/:userId/set_admin', async (req, res) => {
   try {
     const { userId } = req.params;
-    // if (!req.user.is_admin) {
-    //   return res.status(403).send({ error: "Not authorized" });
-    // }
     const updatedUser = await setAdministrator(userId);
     if (updatedUser) {
       res.status(200).send({ message: "User role updated to admin" });
@@ -89,7 +86,7 @@ app.post('/api/auth/Register', async(req, res, next)=> {
     if (ex.code === '23505'){
       ex.message = 'User already exists.';
     }  
-    next(ex)
+    next(ex);
   }
 });
 
@@ -104,7 +101,6 @@ app.get('/api/auth/me', isLoggedIn, (req, res, next)=> {
 
 app.get('/api/users', async(req, res, next)=> {
   try {
-
     res.send(await fetchUsers());
   }
   catch(ex){
@@ -114,7 +110,6 @@ app.get('/api/users', async(req, res, next)=> {
 
 app.get('/api/businesses',  async(req, res, next)=> {
   try {
-    
     res.send(await fetchBusinesses());
   }
   catch(ex){
@@ -124,7 +119,6 @@ app.get('/api/businesses',  async(req, res, next)=> {
 
 app.get('/api/reviews',  async(req, res, next)=> {
   try {
-
     res.send(await fetchReviews());
   }
   catch(ex){
@@ -133,57 +127,64 @@ app.get('/api/reviews',  async(req, res, next)=> {
 });
 
 app.delete('/api/businesses/:id',  async(req, res, next)=> {
-    try {
+  try {
+    await destroyBusiness(req.params.id);
+    res.sendStatus(204);
+  }
+  catch(ex){
+    if (ex.code === '23503'){
+      ex.message = 'This business has some reviews.';
+  }
+    next(ex);
+  }
+});
 
-      await destroyBusiness(req.params.id);
-      res.sendStatus(204);
-    }
-    catch(ex){
-      if (ex.code === '23503'){
-        ex.message = 'This business has some reviews.';
-    }
-      next(ex);
-    }
+app.post('/api/businesses',  async(req, res, next)=> {
+  try {
+    const business = await createBusiness(req.body);
+    res.send({business});
+  }
+  catch(ex) {
+    if (ex.code === '23505'){
+      ex.message = 'Business already exists.';
+    }  
+    next(ex);
+  }
 });
 
 app.delete('/api/users/:user_id/reviews/:id',  async(req, res, next)=> {
-    try {
+  try {
+    await destroyReview(req.params.id);
+    res.sendStatus(204);
+  }
+  catch(ex){
 
-      await destroyReview(req.params.id);
-      res.sendStatus(204);
-    }
-    catch(ex){
- 
-      next(ex);
-    }
+    next(ex);
+  }
 });
 
 app.post('/api/users/:userId/:selectedOption/reviews',  async(req, res, next)=> {
-    try {
-
-        // console.log({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate})
-        res.status(201).send(await createReview({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate}));
-    }
-    catch(ex){
-      return res.status(400).send({message: 'Review already exists'});
-    }
+  try {
+      res.status(201).send(await createReview({ user_id: req.params.userId, business_id: req.params.selectedOption, text: req.body.text, rate: req.body.rate}));
+  }
+  catch(ex){
+    return res.status(400).send({message: 'Review already exists'});
+  }
 });
 
 app.put('/api/users/:user_id/:business_id/reviews/:id', isLoggedIn,  async(req, res, next)=> {
-    try {
-        // console.log("del user fav ",req.params.user_id);
-        // console.log("del user fav ",req.user.id);
-        if(req.params.user_id !== req.user.id){
-          const error = Error('not authorized');
-          error.status = 401;
-          throw error;
-        }
-        await updateReview({user_id: req.params.user_id, id: req.params.id});
-        res.sendStatus(204);
-    }
-    catch(ex){
-        next(ex);
-    }
+  try {
+      if(req.params.user_id !== req.user.id){
+        const error = Error('not authorized');
+        error.status = 401;
+        throw error;
+      }
+      await updateReview({user_id: req.params.user_id, id: req.params.id});
+      res.sendStatus(204);
+  }
+  catch(ex){
+      next(ex);
+  }
 });
 
 app.use((err, req, res, next)=> {
@@ -212,10 +213,7 @@ const [moe, lucy, ethyl, curly, nariman, costco, walmart, albertsons, rouses] = 
   createBusiness({ name: 'Rouses'}),
 ]);
 
-// const review = createReview({ user_id: moe.id, business_id: costco.id, text: "Good Review" });
 
-
-  // console.log(await fetchUsers());
   await setAdministrator(nariman.id);
   console.log('Administrator set.');
 
