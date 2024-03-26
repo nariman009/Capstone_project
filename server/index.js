@@ -207,10 +207,10 @@ const [moe, lucy, ethyl, curly, nariman, costco, walmart, albertsons, rouses] = 
   createUser({ username: 'curly', password: 'c_pw'}),
   createUser({ username: 'nariman', password: '123'}),
 
-  createBusiness({ name: 'Costco'}),
-  createBusiness({ name: 'Walmart'}),
-  createBusiness({ name: 'Albertsons'}),
-  createBusiness({ name: 'Rouses'}),
+  createBusiness({ name: 'Costco', image_url: 'https://mobilecontent.costco.com/live/resource/img/static-folder-app-icon/app-icon.png'}),
+  createBusiness({ name: 'Walmart', image_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTltv3KnyQDiqaKZXvvZH4Seb9Ry13dZGK0dDr67uUsGA&s'}),
+  createBusiness({ name: 'Albertsons', image_url: 'https://logos-world.net/wp-content/uploads/2021/12/Albertsons-Symbol.png'}),
+  createBusiness({ name: 'Rouses', image_url: 'https://play-lh.googleusercontent.com/Jstr50AZFAkuH0zlywm8oCWOhd6BtO9cnp4_Ni3qXKZfPBrTieI3tyDve6sr0pELtQ=w240-h480-rw'}),
 ]);
 
 

@@ -6,6 +6,7 @@ import { useState } from 'react';
 const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
   const [error, setError] = useState('');
   const [name, setName] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [error2, setError2] = useState('');
   
   const deleteAction = async(businessId) => {
@@ -43,7 +44,7 @@ const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
       const response = await fetch(`/api/businesses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({name: name}),
+        body: JSON.stringify({name: name, image_url: imageUrl}),
       });
       const json  = await response.json();
       if (!response.ok){
@@ -74,7 +75,7 @@ const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
             const averageRate = Number((filteredReviews.reduce((acc, curr) => acc + Number(curr.rate), 0) / filteredReviews.length).toFixed(1));
             const average = filteredReviews.length === 0 ? "No Review" : averageRate;
             return (
-              <li key={index}>
+              <li key={index}  class="business-list">
                 <Link to={`/businesses/${business.id}`}>{business.name}</Link> --{">"} Ave.Rate ({average})&nbsp;&nbsp;
                 <Rating 
                   initialRating={average}
@@ -83,6 +84,7 @@ const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
                   fullSymbol={<span className="icon">★</span>}
                   fractions={4}
                 />&nbsp;&nbsp;{auth.id && auth.is_admin && <button onClick={() => deleteAction(business.id)}>X</button>}
+               &nbsp;&nbsp;{business.image_url && <img src={business.image_url} alt="Business" style={{ width: '35px', height: '35px' }} />}
               </li>
             );
           })}
@@ -93,6 +95,7 @@ const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
         <form onSubmit={ submit }>
           { !!error2 && <div className='error'>{ error2 }</div> }
           <input value={ name } placeholder='Enter business name' onChange={ ev=> { setName(ev.target.value); setError2(''); }}/>
+          <input value={imageUrl} placeholder='Enter image URL' onChange={ev => { setImageUrl(ev.target.value); setError2(''); }} />
           <button >Submit</button>
         </form>
       </div>

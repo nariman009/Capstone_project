@@ -61,3 +61,13 @@ ul > * {
   height: 350px;
   object-fit: cover;
 }
+
+.business-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  vertical-align: middle;
+  width: 100%;
+  margin-bottom: 1rem;
+}

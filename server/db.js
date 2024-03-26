@@ -24,7 +24,8 @@ const createTables = async()=> {
     );
     CREATE TABLE businesses(
       id UUID PRIMARY KEY,
-      name VARCHAR(50) NOT NULL UNIQUE
+      name VARCHAR(50) NOT NULL UNIQUE,
+      image_url VARCHAR(255)
     );
     CREATE TABLE reviews(
       id UUID PRIMARY KEY,
@@ -97,13 +98,13 @@ const fetchUsers = async()=> {
   return response.rows;
 };
 
-const createBusiness = async({ name })=> {
+const createBusiness = async({ name, image_url })=> {
   const SQL = `
-    INSERT INTO businesses(id, name)
-    VALUES ($1, $2)
+    INSERT INTO businesses(id, name, image_url)
+    VALUES ($1, $2, $3)
     RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), name ]);
+  const response = await client.query(SQL, [uuid.v4(), name, image_url ]);
   return response.rows[0];
 };
 
