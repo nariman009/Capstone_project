@@ -83,8 +83,12 @@ const Businesses = ({ auth, businesses, setBusinesses, reviews })=> {
                   emptySymbol={<span className="icon">☆</span>}
                   fullSymbol={<span className="icon">★</span>}
                   fractions={4}
-                />&nbsp;&nbsp;{auth.id && auth.is_admin && <button onClick={() => deleteAction(business.id)}>X</button>}
-               &nbsp;&nbsp;{business.image_url && <img src={business.image_url} alt="Business" style={{ width: '35px', height: '35px' }} />}
+                />&nbsp;&nbsp;{auth.id && auth.is_admin && <button onClick={() => deleteAction(business.id)}>X</button>}&nbsp;&nbsp;
+                {business.image_url && (
+                  <Link to={`/businesses/${business.id}`}>
+                    <img src={business.image_url} alt="Business" style={{ width: '30px', height: '30px' }} />
+                  </Link>
+                )}
               </li>
             );
           })}
