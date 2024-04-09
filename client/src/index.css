@@ -26,6 +26,13 @@ ul > * {
   margin: 0.5rem;
 }
 
+.bc-table, .bc-table td {
+  border: 1px solid black;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: small;
+}
+
 .mainHome {
   display: flex;
   flex-direction: row;
